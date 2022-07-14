@@ -4,7 +4,8 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 
 local PeopleInCamo = {}
-
+local CamoActivate = Sound("HL1/fvox/activated.wav")
+local CamoDeactivate = Sound("HL1/fvox/deactivated.wav")
 
 local function CamoIsEnabled(ply)
 	return ply and ply.Camo
@@ -14,6 +15,7 @@ util.AddNetworkString("CamoDisable")
 local function DisableCamo(ply)
 	ply:SetNoDraw(false)
 	ply.Camo = false
+	ply:EmitSound(CamoDeactivate, 50, 100, 1, CHAN_AUTO )
 	net.Start("CamoDisable")
 		net.WriteEntity(ply)
 	net.Broadcast()
@@ -23,6 +25,7 @@ util.AddNetworkString("CamoEnable")
 local function EnableCamo(ply)
 	ply:SetNoDraw(false)
 	ply.Camo = true
+	ply:EmitSound(CamoActivate, 50, 100, 1, CHAN_AUTO )
 	net.Start("CamoEnable")
 		net.WriteEntity(ply)
 	net.Broadcast()
@@ -62,6 +65,12 @@ function SWEP:Holster()
 	end
 	return true
 end
+
+concommand.Add("_disable_camo", function(ply)
+    if CamoIsEnabled(ply) then
+        DisableCamo(ply)
+    end
+end)
 
 local function RemoveCamoOnArrest(criminal, time, actor)
 	if CamoIsEnabled(criminal) then

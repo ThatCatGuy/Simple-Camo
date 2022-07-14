@@ -4,9 +4,6 @@ SWEP.PrintName = "Camo"
 SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = false
 
-local CamoActivate = Sound("HL1/fvox/activated.wav")
-local CamoDeactivate = Sound("HL1/fvox/deactivated.wav")
-
 local CamoMat = Material("models/props_combine/com_shield001a")
 
 local colorMofify = {
@@ -21,7 +18,7 @@ local colorMofify = {
 	["$pp_colour_mulb"] = 0,
 }
 
-Camo = Camo or {}
+Camo = Camo || {}
 local camoActive = false
 
 function Camo.IsEnabled(ply)
@@ -32,7 +29,6 @@ net.Receive("CamoDisable", function()
 	local player = net.ReadEntity()
 	if !player then return end
 	if player == LocalPlayer() then
-		surface.PlaySound(CamoDeactivate)
 		camoActive = false
 	end
 	player.Camo = false
@@ -42,7 +38,6 @@ net.Receive("CamoEnable", function()
 	local player = net.ReadEntity()
 	if !player then return end
 	if player == LocalPlayer() then
-		surface.PlaySound(CamoActivate)
 		camoActive = true
 	end
 	player.Camo = true
